@@ -23,6 +23,7 @@ export const App = () => {
       case RATING.BAD:
         setBad(prev => prev + 1);
         break;
+      default:
     }
   };
 
