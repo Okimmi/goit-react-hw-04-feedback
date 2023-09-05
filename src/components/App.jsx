@@ -1,34 +1,44 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { Feedback } from './Feedback/Feedback';
 
-export class App extends Component {
-  state = { good: 0, neutral: 0, bad: 0 };
+const RATING = {
+  GOOD: 'good',
+  NEUTRAL: 'neutral',
+  BAD: 'bad',
+};
 
-  clickBtn = e => {
-    this.setState(prevState => ({
-      [e.target.name]: prevState[`${e.target.name}`] + 1,
-    }));
+export const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const clickBtn = e => {
+    switch (e.target.name) {
+      case RATING.GOOD:
+        setGood(prev => prev + 1);
+        break;
+      case RATING.NEUTRAL:
+        setNeutral(prev => prev + 1);
+        break;
+      case RATING.BAD:
+        setBad(prev => prev + 1);
+        break;
+    }
   };
 
-  countTotalFeedback = () =>
-    Object.values(this.state).reduce(
-      (previousValue, item) => previousValue + item,
-      0
-    );
+  const countTotalFeedback = () => good + neutral + bad;
 
-  countPositiveFeedbackPercentage = () =>
-    Math.round((this.state.good / this.countTotalFeedback()) * 100);
+  const countPositiveFeedbackPercentage = () =>
+    Math.round((good / countTotalFeedback()) * 100);
 
-  render() {
-    return (
-      <div>
-        <Feedback
-          state={this.state}
-          clickBtn={this.clickBtn}
-          total={this.countTotalFeedback()}
-          positivePercentage={this.countPositiveFeedbackPercentage()}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <Feedback
+        state={{ good, neutral, bad }}
+        clickBtn={clickBtn}
+        total={countTotalFeedback()}
+        positivePercentage={countPositiveFeedbackPercentage()}
+      />
+    </div>
+  );
+};
